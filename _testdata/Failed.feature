@@ -1,5 +1,8 @@
+@allure.label.epic:test
+@allure.label.feature:failing
 Feature: failing scenarios
 
+  @allure.label.epic:test
   Scenario: pass then fail 1
     When I pass
     And I sleep for a bit
