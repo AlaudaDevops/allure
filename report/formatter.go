@@ -143,7 +143,7 @@ func StepFinished(res *Result, name string, status Status, statusDetails *Status
 
 	step.Stop = GetTimestampMs()
 
-	if status != Skipped || res.Status == "" {
+	if status != res.Status {
 		res.Status = status
 	}
 
