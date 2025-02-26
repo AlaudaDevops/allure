@@ -33,10 +33,6 @@ func RegisterFormatter() {
 
 		godog.Format("allure", "Allure formatter.",
 			func(suite string, writer io.Writer) formatters.Formatter {
-				if suite == "" {
-					suite = "Features"
-				}
-
 				return &formatter{
 					Formatter: report.Formatter{
 						ResultsPath: strings.TrimSuffix(ResultsPath, "/"),
@@ -86,11 +82,16 @@ func (f *formatter) Pickle(scenario *godog.Scenario) {
 	labels := GetAllureLabelsFromTags(scenario.Tags)
 	labels = append(labels, []report.Label{
 		{Name: "feature", Value: feature.Feature.Name},
-		{Name: "suite", Value: f.Container.Name},
-		{Name: "epic", Value: f.Container.Name},
 		{Name: "framework", Value: "godog"},
 		{Name: "language", Value: "Go"},
 	}...)
+
+	if f.Container.Name != "" {
+		labels = append(labels,
+			report.Label{Name: "suite", Value: f.Container.Name},
+			report.Label{Name: "epic", Value: f.Container.Name},
+		)
+	}
 
 	res := report.Result{
 		Name:        scenario.Name,
