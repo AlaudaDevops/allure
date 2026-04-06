@@ -80,6 +80,10 @@ func (f *formatter) Pickle(scenario *godog.Scenario) {
 	feature := f.Storage.MustGetFeature(scenario.Uri)
 
 	labels := GetAllureLabelsFromTags(scenario.Tags)
+	// Include all raw tags as "tag" type labels for downstream consumers (e.g. Lynx case_tags/case_ids extraction)
+	for _, tag := range scenario.Tags {
+		labels = append(labels, report.Label{Name: "tag", Value: tag.Name})
+	}
 	labels = append(labels, []report.Label{
 		{Name: "feature", Value: feature.Feature.Name},
 		{Name: "framework", Value: "godog"},
