@@ -143,11 +143,8 @@ func StepFinished(res *Result, name string, status Status, statusDetails *Status
 
 	step.Stop = GetTimestampMs()
 
-	if status != res.Status {
+	if shouldUpdateResultStatus(res.Status, status) {
 		res.Status = status
-	}
-
-	if statusDetails != nil {
 		res.StatusDetails = statusDetails
 	}
 
@@ -158,6 +155,15 @@ func StepFinished(res *Result, name string, status Status, statusDetails *Status
 	res.Steps = append(res.Steps, step)
 
 	return step
+}
+
+// shouldUpdateResultStatus reports whether a step status should become the aggregate result status.
+func shouldUpdateResultStatus(current Status, next Status) bool {
+	if next != Skipped {
+		return true
+	}
+
+	return current == "" || current == Passed || current == Skipped
 }
 
 // StepFinished finishes step and updates result.
